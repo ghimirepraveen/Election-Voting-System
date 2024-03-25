@@ -42,7 +42,7 @@ model Voter {
   name              String
   address           String
   citizen_number    String
-  is_verified       Boolean
+  is_verified       Boolean @default(false)
   citizenship_photo String?
   votes             Vote[]
 }
