@@ -6,3 +6,4 @@ import { Voter } from "../controller/voter.controller";
 const voterRouter = express.Router();
 
 voterRouter.post("/addDetails", verifyRole(["VOTER"]), Voter.addDetails);
+voterRouter.get("/getDetails", verifyRole(["VOTER"]), Voter.getDetails);
