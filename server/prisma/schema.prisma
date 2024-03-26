@@ -15,15 +15,15 @@ datasource db {
 
 // Define the User model
 model User {
-  user_id       Int     @id @default(autoincrement())
-  email         String  @unique
-  password_hash String?
+  user_id          Int       @id @default(autoincrement())
+  email            String    @unique
+  password_hash    String?
   passwors_expires DateTime?
-  role          Role?
-  voter         Voter[]
+  role             Role?
+  voter            Voter[]
 
   candidate Candidate[]
-
+  photo    Photo[]
   admin Admin[]
 }
 
@@ -37,7 +37,7 @@ enum Role {
 // Define the Voter model
 model Voter {
   voter_id          Int     @id @default(autoincrement())
-  user              User    @relation(fields: [user_id], references: [user_id]) 
+  user              User    @relation(fields: [user_id], references: [user_id])
   user_id           Int     @unique
   name              String
   address           String
@@ -45,6 +45,7 @@ model Voter {
   is_verified       Boolean @default(false)
   citizenship_photo String?
   votes             Vote[]
+  photo             Photo[]
 }
 
 // Define the Candidate model
@@ -58,6 +59,7 @@ model Candidate {
   citizenship_photo String?
   vote_count        Int     @default(0) // Field to store the count of votes
   votes             Vote[]
+  photo             Photo[]
 }
 
 // Define the Vote model
@@ -73,5 +75,18 @@ model Vote {
 model Admin {
   admin_id Int  @id @default(autoincrement())
   user     User @relation(fields: [user_id], references: [user_id])
-  user_id  Int   @unique
+  user_id  Int  @unique
+}
+
+model Photo {
+  user User? @relation(fields: [user_id], references: [user_id])
+  user_id Int?
+  photo_id     Int       @id @default(autoincrement())
+  url          String?
+  voter        Voter?    @relation(fields: [voter_id], references: [voter_id])
+  voter_id     Int?
+  candidate    Candidate? @relation(fields: [candidate_id], references: [candidate_id])
+  candidate_id Int?
+  isactive    Boolean?   @default(true)
+
 }
