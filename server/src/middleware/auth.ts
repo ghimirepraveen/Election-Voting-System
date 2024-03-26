@@ -9,7 +9,10 @@ const verifyRole = (roles: string[]) => {
         throw new Error("Not authorized");
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      const decoded: any = jwt.verify(
+        token,
+        process.env.JWT_SECRET as string
+      ) as {
         id: string;
         role: string;
       };
@@ -17,7 +20,7 @@ const verifyRole = (roles: string[]) => {
         throw new Error("Not authorized");
       }
 
-      req.body.user = decoded;
+      req.user = decoded;
 
       next();
     } catch (error) {

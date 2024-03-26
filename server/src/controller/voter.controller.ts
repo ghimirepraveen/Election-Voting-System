@@ -45,11 +45,10 @@ export const Voter = {
 
   getDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user_id = req.body.user_id as unknown as number;
+      const user_id = req.user.user_id as unknown as number;
       if (!user_id) {
         return next(new customError("Internal Server Error", 404));
       }
-
       const getDetails = await prisma.voter.findUnique({
         where: {
           user_id: user_id,
@@ -58,12 +57,14 @@ export const Voter = {
       res.status(200).json(getDetails);
     }
   ),
+
   updateDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user_id = req.body.user_id as unknown as number;
       const name = req.body.name as string;
       const address = req.body.address as string;
       const citizen_number = req.body.citizen_number as string;
+      const user_id = req.user.user_id as number;
+      console.log(req.user);
       if (!user_id || !name || !address || !citizen_number) {
         return next(new customError("Internal Server Error", 404));
       }
