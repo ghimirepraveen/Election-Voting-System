@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
-import { getAndCreateUser } from "../models/user";
 import customError from "../errors/customError";
 import { Role } from "@prisma/client";
 import { prisma } from "../models/db";
@@ -8,34 +7,24 @@ import { prisma } from "../models/db";
 export const Voter = {
   addDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const email = req.body.email as string;
-      const role = req.body.role as Role;
-      const user_id = req.body.user_id as number;
       const name = req.body.name as string;
       const address = req.body.address as string;
       const citizen_number = req.body.citizen_number as string;
-      const phone_number = req.body.phone_number as number;
       const citizenship_url = req.file as Express.Multer.File;
-      if (
-        !email ||
-        !role ||
-        !user_id ||
-        !name ||
-        !address ||
-        !citizen_number ||
-        !phone_number ||
-        !citizenship_url
-      ) {
-        return next(new customError("Internal Server Error", 404));
+
+      console.log(citizenship_url.path);
+
+      if (!name || !address || !citizen_number) {
+        return next(new customError("PRODIVE ALL DATA", 404));
       }
-      if (!req.body.user_id) {
-        return next(new customError("Internal Server Error", 404));
+      if (!req.user.id) {
+        return next(new customError("NO USER ID ", 404));
       }
-      const voter_id = req.user.user_id as unknown as number;
+      const user_id = req.user.id as unknown as number;
 
       const addDetails = await prisma.voter.create({
         data: {
-          user_id: req.body?.user_id,
+          user_id,
           name,
           address,
           citizen_number,
@@ -53,7 +42,7 @@ export const Voter = {
 
   getDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user_id = req.user.user_id as unknown as number;
+      const user_id = req.user.id as unknown as number;
       if (!user_id) {
         return next(new customError("Internal Server Error", 404));
       }
@@ -73,6 +62,7 @@ export const Voter = {
         },
       });
       res.status(200).json(getDetails);
+      console.log(getDetails);
     }
   ),
 
@@ -123,7 +113,7 @@ export const Voter = {
         }),
       ]);
 
-      res.status(200).json({ message: "User details updated successfully" });
+      res.status(200).json({ message: "Details updated successfully" });
     }
   ),
 };

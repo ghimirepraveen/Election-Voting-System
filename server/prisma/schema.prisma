@@ -13,6 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 // Define the User model
 model User {
   user_id          Int       @id @default(autoincrement())
@@ -43,7 +44,6 @@ model Voter {
   address           String
   citizen_number    String
   is_verified       Boolean @default(false)
-  citizenship_photo String?
   votes             Vote[]
   photo             Photo[]
 }
@@ -90,3 +90,4 @@ model Photo {
   isactive    Boolean?   @default(true)
 
 }
+

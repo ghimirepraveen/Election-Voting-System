@@ -6,10 +6,15 @@ import upload from "../config/multer/multer";
 
 const voterRouter = express.Router();
 
-voterRouter.post(
-  "/addDetails",
+voterRouter.use(verifyRole(["VOTER"]));
+
+voterRouter.post("/adddetails", upload.single("citizenship"), Voter.addDetails);
+voterRouter.get("/getdetails", Voter.getDetails);
+
+voterRouter.put(
+  "/updatedetails",
   upload.single("citizenship"),
-  verifyRole(["VOTER"]),
-  Voter.addDetails
+  Voter.updateDetails
 );
-voterRouter.get("/getDetails", verifyRole(["VOTER"]), Voter.getDetails);
+
+export default voterRouter;

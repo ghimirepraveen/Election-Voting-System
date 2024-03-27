@@ -2,6 +2,7 @@ import express from "express";
 
 import errorHandeler from "./controller/error.contoller";
 import userRouter from "./router/user.routes";
+import voterRouter from "./router/voter.routes";
 
 require("dotenv").config();
 const app = express();
@@ -10,6 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
+
+app.use("/api/voter", voterRouter);
 
 app.use(errorHandeler);
 app.listen(process.env.PORT, () => {

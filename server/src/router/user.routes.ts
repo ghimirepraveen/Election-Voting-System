@@ -7,6 +7,6 @@ const userRouter = express.Router();
 userRouter.post("/reqpassword", User.reqPassword);
 userRouter.post("/login", User.login);
 
-userRouter.get("/detail", verifyRole(["ADMIN"]), User.details);
+userRouter.get("/detail", User.details);
 
 export default userRouter;
