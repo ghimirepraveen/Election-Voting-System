@@ -8,8 +8,8 @@ import checkPasswordExpire from "../utils/checkpasswordexpires";
 async function generatePassword(): Promise<string> {
   const password: string = otpgenerator.generate(10, {
     digits: true,
-    upperCaseAlphabets: false,
-    specialChars: false,
+    upperCaseAlphabets: true,
+    specialChars: true,
   });
   console.log(`passport ${password}`);
   return password;

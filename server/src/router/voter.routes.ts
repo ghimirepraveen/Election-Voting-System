@@ -8,7 +8,11 @@ const voterRouter = express.Router();
 
 voterRouter.use(verifyRole(["VOTER"]));
 
-voterRouter.post("/adddetails", upload.single("citizenship"), Voter.addDetails);
+voterRouter.post(
+  "/adddetails",
+  upload.single("citizenshipVoter"),
+  Voter.addDetails
+);
 voterRouter.get("/getdetails", Voter.getDetails);
 
 voterRouter.put(

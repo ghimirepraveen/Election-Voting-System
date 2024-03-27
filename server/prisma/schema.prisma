@@ -53,9 +53,12 @@ model Candidate {
   candidate_id      Int     @id @default(autoincrement())
   user              User    @relation(fields: [user_id], references: [user_id])
   user_id           Int     @unique
+  name              String
+  address           String
   position          String
   citizen_number    String
-  is_verified       Boolean
+  manifesto         String 
+  is_verified       Boolean @default(false)
   citizenship_photo String?
   vote_count        Int     @default(0) // Field to store the count of votes
   votes             Vote[]

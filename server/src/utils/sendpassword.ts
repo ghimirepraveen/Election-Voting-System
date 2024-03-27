@@ -52,8 +52,8 @@ export const sendPasswordUsingMail = async (
     from: process.env.USER_EMAIL,
     to: email,
     subject: "OTP Verification",
-    html: `<h1>KSW:-</h1><h3><p>Your Password is: ${Password}</h3></p><p>Expiring in 3 Minutes....</p>`,
-    text: `Voting System:-\nYour OTP is:{otp}\n`,
+    html: `<h1>-</h1><h3><p>Your Password is: ${Password}</h3></p><p>Expiring in 1 Minutes....</p>`,
+    text: `Voting System:-\nYour Password  is:${Password}\n`,
   };
 
   try {
