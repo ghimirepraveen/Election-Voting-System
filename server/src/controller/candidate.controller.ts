@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../models/db";
 import customError from "../errors/customError";
 import asyncCatch from "../errors/catchAsync";
-import { get } from "http";
 
 export const Candidate = {
   adddeatails: asyncCatch(
