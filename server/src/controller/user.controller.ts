@@ -31,31 +31,37 @@ export const User = {
   ),
 
   login: asyncCatch(async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const email = req.body.email as string;
+    const password = req.body.password as string;
     const role = req.body.role;
     if (!email || !password || !role)
       return next(new customError("Internal Server Error", 404));
     validateEmail(email);
 
     checkPasswordExpire(email);
-    const user = await getUser(email, role);
-    if (!user) new customError("User not found", 404);
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password_hash as string
-    );
-    if (!isMatch) new customError("Invalid credentials", 401);
+    const user = await getUser(email, role);
+    if (!user) throw new customError("User not found", 404);
+
+    console.log(user);
+    // const isMatch = await bcrypt.compare(
+    //   password,
+    //   user?.password_hash as string
+    // );
+    const isMatch = password === user?.password_hash;
+
+    console.log(isMatch);
+
+    if (!isMatch) throw new customError("Invalid credentials", 401);
 
     const token = jwt.sign(
-      { id: user.user_id, role: user.role, email: user.email },
+      { id: user?.user_id, role: user?.role, email: user?.email },
       process.env.JWT_SECRET as string,
       {
         expiresIn: process.env.JWT_EXPIRE,
       }
     );
-    req.user = { id: user.user_id, role: user.role, email: user.email };
+    req.user = { id: user?.user_id, role: user?.role, email: user?.email };
 
     res.status(200).json({
       status: "success",

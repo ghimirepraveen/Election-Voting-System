@@ -21,9 +21,13 @@ function passwordTime(): Date {
   return expirationTime;
 }
 
-async function hashPassword(Password: string): Promise<string> {
-  const enOTP: string = await bcrypt.hash(Password, 10);
-  return enOTP;
+// async function hashPassword(Password: string): Promise<string> {
+//   const enOTP: string = await bcrypt.hash(Password, 10);
+//   return enOTP;
+// }
+async function hashPassword(password: string): Promise<string> {
+  const hashedPassword = password;
+  return hashedPassword;
 }
 
 export async function getAndCreateUser(email: string, role: string) {
@@ -32,9 +36,11 @@ export async function getAndCreateUser(email: string, role: string) {
 
     const checkExpire = await checkPasswordExpire(email);
     const user = await getUser(email, role as Role);
+
     if (user && !checkExpire) {
       const hashedPassword = await hashPassword(password);
       const passwors_expires = passwordTime();
+
       await prisma.user.update({
         where: { email: email },
         data: {

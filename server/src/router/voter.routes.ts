@@ -1,5 +1,5 @@
 import express from "express";
-import { User } from "../controller/usercontroller";
+import { User } from "../controller/user.controller";
 import { verifyRole } from "../middleware/auth";
 import { Voter } from "../controller/voter.controller";
 import upload from "../config/multer/multer";
@@ -13,6 +13,7 @@ voterRouter.post(
   upload.single("citizenshipVoter"),
   Voter.addDetails
 );
+
 voterRouter.get("/getdetails", Voter.getDetails);
 
 voterRouter.put(

@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
 import { prisma } from "../models/db";
 import customError from "../errors/customError";
-import { User } from "./usercontroller";
 const ADMIN = process.env.ADMIN;
 
 export const Admin = {
   getAllVoters: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
+      console.log(ADMIN, req.user.email);
+
       if (req.user.email !== ADMIN) {
         return next(
           new customError("You are not authorized to access this route", 401)
@@ -21,7 +22,6 @@ export const Admin = {
       });
     }
   ),
-
   getAllvoterNotVerified: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       if (req.user.email !== ADMIN) {
@@ -77,6 +77,7 @@ export const Admin = {
       });
 
       if (!voter) next(new customError("Voter not found", 404));
+
       const verify = await prisma.voter.update({
         where: {
           voter_id: voterid,
@@ -88,7 +89,7 @@ export const Admin = {
 
       res.status(200).json({
         status: "success",
-        voter,
+        verify,
       });
     }
   ),

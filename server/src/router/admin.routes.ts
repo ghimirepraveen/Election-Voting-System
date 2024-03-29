@@ -21,3 +21,4 @@ adminRouter.get(
 );
 adminRouter.patch("/verifycandidate/:candidateid", Admin.verifyCandidate);
 adminRouter.delete("/deletecandidate/:candidateid", Admin.deleteCandidate);
+export default adminRouter;

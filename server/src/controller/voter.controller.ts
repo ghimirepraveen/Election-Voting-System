@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
 import customError from "../errors/customError";
-import { Role } from "@prisma/client";
 import { prisma } from "../models/db";
 
 export const Voter = {
@@ -12,19 +11,22 @@ export const Voter = {
       const citizen_number = req.body.citizen_number as string;
       const citizenship_url = req.file as Express.Multer.File;
 
-      console.log(citizenship_url.path);
-
-      if (!name || !address || !citizen_number) {
+      if (!name || !address || !citizen_number || !citizenship_url) {
         return next(new customError("PRODIVE ALL DATA", 404));
       }
       if (!req.user.id) {
         return next(new customError("NO USER ID ", 404));
       }
-      const user_id = req.user.id as unknown as number;
+      const user = await prisma.user.findUnique({
+        where: { user_id: req.user.id },
+      });
 
+      if (!user) {
+        return next(new customError("PRODIVE ALL DATA", 404));
+      }
       const addDetails = await prisma.voter.create({
         data: {
-          user_id,
+          user_id: req.user.id as number,
           name,
           address,
           citizen_number,
@@ -35,7 +37,6 @@ export const Voter = {
           },
         },
       });
-
       res.status(200).json(addDetails);
     }
   ),
@@ -68,26 +69,27 @@ export const Voter = {
 
   updateDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user_id = req.user.user_id as number;
       const name = req.body.name as string;
       const address = req.body.address as string;
       const citizen_number = req.body.citizen_number as string;
       const citizenship_photo_url = req.file as Express.Multer.File; // Access the uploaded file
 
-      if (
-        !user_id ||
-        !name ||
-        !address ||
-        !citizen_number ||
-        !citizenship_photo_url
-      ) {
+      if (!name || !address || !citizen_number || !citizenship_photo_url) {
         throw new Error("Required fields not provided");
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { user_id: req.user.id },
+      });
+
+      if (!user) {
+        return next(new customError("PRODIVE ALL DATA", 404));
       }
 
       await prisma.$transaction([
         prisma.photo.updateMany({
           where: {
-            voter_id: user_id,
+            user_id: user.user_id,
             isactive: true,
           },
           data: {
@@ -98,12 +100,12 @@ export const Voter = {
           data: {
             url: citizenship_photo_url.path,
             isactive: true,
-            voter_id: user_id,
+            user_id: user.user_id,
           },
         }),
         prisma.voter.update({
           where: {
-            user_id: user_id,
+            user_id: user.user_id,
           },
           data: {
             name,

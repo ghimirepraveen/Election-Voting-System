@@ -22,7 +22,6 @@ model User {
   passwors_expires DateTime?
   role             Role?
   voter            Voter[]
-
   candidate Candidate[]
   photo    Photo[]
   admin Admin[]
