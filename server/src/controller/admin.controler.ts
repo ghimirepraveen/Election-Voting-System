@@ -238,3 +238,5 @@ export const Admin = {
     }
   ),
 };
+
+//should change this ligic for controller whole code is repeating
