@@ -1,10 +1,10 @@
 import otpgenerator from "otp-generator";
 import bcrypt from "bcrypt";
 import { prisma } from "../models/db";
-import { sendPasswordUsingMail } from "../utils/sendpassword";
+import { sendPasswordUsingMail } from "../utils/sendPassword";
 import { getUser } from "../utils/getuser";
 import { Role } from "@prisma/client";
-import checkPasswordExpire from "../utils/checkpasswordexpires";
+import checkPasswordExpire from "../utils/checkPasswordExpires";
 async function generatePassword(): Promise<string> {
   const password: string = otpgenerator.generate(10, {
     digits: true,

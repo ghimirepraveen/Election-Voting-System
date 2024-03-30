@@ -1,24 +1,57 @@
 import express from "express";
-import { Admin } from "../controller/admin.controler";
+import { adminController } from "../controller/admin.controler";
 import { verifyRole } from "../middleware/auth";
+import { checkAdminMail } from "../utils/checkaAdminMail";
 
 const adminRouter = express.Router();
 
-adminRouter.use(verifyRole(["ADMIN"]));
-//VOTER ROUTES
-adminRouter.get("/getvoter/:voterid", Admin.getVoter);
-adminRouter.get("/getallvoters", Admin.getAllVoters);
-adminRouter.get("/getallvotersnotverified", Admin.getAllvoterNotVerified);
-adminRouter.patch("/verifyvoter/:voterid", Admin.verfiyVoter);
-adminRouter.delete("/deletevoter/:voterid", Admin.deleteVoter);
+adminRouter.use(verifyRole(["VOTER", "CANDIDATE"]));
+adminRouter.use(checkAdminMail);
+//admin is verified by email provided in .env file
+//adimin is checkted in checkAdminMail function in admin.controller.ts
 
-//CANDIDATE ROUTES
-adminRouter.get("/getcandidate/:candidateid", Admin.getCandidate);
-adminRouter.get("/getallcandidates", Admin.getAllCandidates);
+//VOTER ROUTES
+adminRouter.get("/getvoter/:voterid", adminController("voter").getdetails);
+adminRouter.get(
+  "/getallvotersverfied",
+  adminController("voter").getDetailsForVerified
+);
+adminRouter.get(
+  "/getallvotersnotverified",
+  adminController("voter").getAllEntityNotVerified
+);
+
+adminRouter.get("/getallvoters", adminController("voter").getAllEntity);
+adminRouter.patch(
+  "/verifyvoter/:voterid",
+  adminController("voter").verifyEntity
+);
+adminRouter.delete(
+  "/deletevoter/:voterid",
+  adminController("voter").deleteEntity
+);
+// //CANDIDATE ROUTES
+
+adminRouter.get(
+  "/getcandidate/:candidateid",
+  adminController("candidate").getdetails
+);
+adminRouter.get(
+  "/getallcandidatesverified",
+  adminController("candidate").getDetailsForVerified
+);
 adminRouter.get(
   "/getallcandidatesnotverified",
-  Admin.getAllCandidatesNotVerified
+  adminController("candidate").getAllEntityNotVerified
 );
-adminRouter.patch("/verifycandidate/:candidateid", Admin.verifyCandidate);
-adminRouter.delete("/deletecandidate/:candidateid", Admin.deleteCandidate);
+adminRouter.get("/getallcandidates", adminController("candidate").getAllEntity);
+adminRouter.patch(
+  "/verifycandidate/:candidateid",
+  adminController("candidate").verifyEntity
+);
+adminRouter.delete(
+  "/deletecandidate/:candidateid",
+  adminController("candidate").deleteEntity
+);
+
 export default adminRouter;

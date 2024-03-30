@@ -37,7 +37,7 @@ enum Role {
 // Define the Voter model
 model Voter {
   voter_id          Int     @id @default(autoincrement())
-  user              User    @relation(fields: [user_id], references: [user_id])
+  user              User    @relation(fields: [user_id], references: [user_id],onDelete: Cascade) 
   user_id           Int     @unique
   name              String
   address           String
@@ -50,7 +50,7 @@ model Voter {
 // Define the Candidate model
 model Candidate {
   candidate_id      Int     @id @default(autoincrement())
-  user              User    @relation(fields: [user_id], references: [user_id])
+  user              User    @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
   user_id           Int     @unique
   name              String
   address           String
@@ -67,27 +67,27 @@ model Candidate {
 // Define the Vote model
 model Vote {
   vote_id      Int       @id @default(autoincrement())
-  voter        Voter     @relation(fields: [voter_id], references: [voter_id])
+  voter        Voter     @relation(fields: [voter_id], references: [voter_id],onDelete: Cascade)
   voter_id     Int       @unique
-  candidate    Candidate @relation(fields: [candidate_id], references: [candidate_id])
+  candidate    Candidate @relation(fields: [candidate_id], references: [candidate_id],onDelete: Cascade)
   candidate_id Int
 }
 
 // Define the Admin model
 model Admin {
   admin_id Int  @id @default(autoincrement())
-  user     User @relation(fields: [user_id], references: [user_id])
+  user     User @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
   user_id  Int  @unique
 }
 
 model Photo {
-  user User? @relation(fields: [user_id], references: [user_id])
+  user User? @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
   user_id Int?
   photo_id     Int       @id @default(autoincrement())
   url          String?
-  voter        Voter?    @relation(fields: [voter_id], references: [voter_id])
+  voter        Voter?    @relation(fields: [voter_id], references: [voter_id],onDelete: Cascade)
   voter_id     Int?
-  candidate    Candidate? @relation(fields: [candidate_id], references: [candidate_id])
+  candidate    Candidate? @relation(fields: [candidate_id], references: [candidate_id],onDelete: Cascade)
   candidate_id Int?
   isactive    Boolean?   @default(true)
 

@@ -6,7 +6,7 @@ import { getUser } from "../utils/getuser";
 import customError from "../errors/customError";
 import bcrypt from "bcrypt";
 import validateEmail from "../utils/verifyEmail";
-import checkPasswordExpire from "../utils/checkpasswordexpires";
+import checkPasswordExpire from "../utils/checkPasswordExpires";
 declare global {
   namespace Express {
     interface Request {

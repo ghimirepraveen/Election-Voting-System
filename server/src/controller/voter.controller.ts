@@ -52,6 +52,7 @@ export const Voter = {
           user_id: user_id,
         },
         select: {
+          user_id: true,
           name: true,
           address: true,
           citizen_number: true,

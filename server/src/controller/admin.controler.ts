@@ -2,241 +2,117 @@ import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
 import { prisma } from "../models/db";
 import customError from "../errors/customError";
-const ADMIN = process.env.ADMIN;
+import { checkAdminMail } from "../utils/checkaAdminMail";
+import {
+  getDetails,
+  getDetailsForVerified,
+  getAllEntityNotVerified,
+  getAllEntity,
+  deleteEntity,
+  verifyEntity,
+} from "../models/admin";
 
-export const Admin = {
-  getAllVoters: asyncCatch(
+export const adminController = (userType: "voter" | "candidate") => ({
+  getdetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      console.log(ADMIN, req.user.email);
-
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
+      const id = Number(req.params.voterid);
+      if (!id) {
+        return next(new customError("Provide ID", 404));
       }
+      const email = req.user.email;
 
-      const voters = await prisma.voter.findMany();
+      // const checkAdmin = await checkAdminMail(email);
+
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
+      const details = await getDetails(userType, id);
       res.status(200).json({
         status: "success",
-        voters,
+        details,
       });
     }
   ),
-  getAllvoterNotVerified: asyncCatch(
+  getDetailsForVerified: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const voters = await prisma.voter.findMany({
-        where: {
-          is_verified: false,
-        },
-      });
+      const details = await getDetailsForVerified(userType);
+      const email = req.user.email;
+      // const checkAdmin = await checkAdminMail(email);
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
       res.status(200).json({
         status: "success",
-        voters,
+        details,
       });
     }
   ),
-
-  getVoter: asyncCatch(
+  getAllEntityNotVerified: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const voterid = Number(req.params.voterid);
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-
-      const userProfile = await prisma.voter.findUnique({
-        where: {
-          voter_id: voterid,
-        },
-      });
+      const email = req.user.email;
+      // const checkAdmin = await checkAdminMail(email);
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
+      const details = await getAllEntityNotVerified(userType);
       res.status(200).json({
         status: "success",
-        profile: userProfile,
-      });
-    }
-  ),
-
-  verfiyVoter: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const voterid = Number(req.params.voterid);
-      const voter = await prisma.voter.findUnique({
-        where: {
-          voter_id: voterid,
-        },
-      });
-
-      if (!voter) next(new customError("Voter not found", 404));
-
-      const verify = await prisma.voter.update({
-        where: {
-          voter_id: voterid,
-        },
-        data: {
-          is_verified: true,
-        },
-      });
-
-      res.status(200).json({
-        status: "success",
-        verify,
+        details,
       });
     }
   ),
 
-  deleteVoter: asyncCatch(
+  getAllEntity: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const voterid = Number(req.params.voterid);
-
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const voter = await prisma.voter.findUnique({
-        where: {
-          voter_id: voterid,
-        },
-      });
-
-      if (!voter) next(new customError("Voter not found", 404));
-      await prisma.voter.delete({
-        where: {
-          voter_id: voterid,
-        },
-      });
-
+      // const email = req.user.email;
+      // const checkAdmin = await checkAdminMail(email);
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
+      const details = await getAllEntity(userType);
       res.status(200).json({
         status: "success",
-        message: "Voter found",
-        voter,
+        details,
+      });
+    }
+  ),
+  verifyEntity: asyncCatch(
+    async (req: Request, res: Response, next: NextFunction) => {
+      // const email = req.user.email;
+      // const checkAdmin = await checkAdminMail(email);
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
+      const id = Number(req.params.voterid);
+      if (!id) {
+        return next(new customError("Provide ID", 404));
+      }
+
+      const details = await verifyEntity(userType, id);
+      res.status(200).json({
+        status: "success",
+        details,
       });
     }
   ),
 
-  getAllCandidates: asyncCatch(
+  deleteEntity: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
+      // const email = req.user.email;
+      // const checkAdmin = await checkAdminMail(email);
+      // if (checkAdmin === false) {
+      //   return next(new customError("You are not authorized", 404));
+      // }
+      const id = Number(req.params.voterid);
+      if (!id) {
+        return next(new customError("Provide ID", 404));
       }
 
-      const candidates = await prisma.candidate.findMany();
+      const details = await deleteEntity(userType, id);
       res.status(200).json({
         status: "success",
-        candidates,
+        details,
       });
     }
   ),
-  getAllCandidatesNotVerified: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const candidates = await prisma.candidate.findMany({
-        where: {
-          is_verified: false,
-        },
-      });
-      res.status(200).json({
-        status: "success",
-        candidates,
-      });
-    }
-  ),
-
-  getCandidate: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const candidateid = Number(req.params.candidateid);
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-
-      const candidateProfile = await prisma.candidate.findUnique({
-        where: {
-          candidate_id: candidateid,
-        },
-      });
-      res.status(200).json({
-        status: "success",
-        profile: candidateProfile,
-      });
-    }
-  ),
-  verifyCandidate: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const candidateid = Number(req.params.candidateid);
-      const candidate = await prisma.candidate.findUnique({
-        where: {
-          candidate_id: candidateid,
-        },
-      });
-
-      if (!candidate) next(new customError("Candidate not found", 404));
-      const verify = await prisma.candidate.update({
-        where: {
-          candidate_id: candidateid,
-        },
-        data: {
-          is_verified: true,
-        },
-      });
-
-      res.status(200).json({
-        status: "success",
-        candidate,
-      });
-    }
-  ),
-  deleteCandidate: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const candidateid = Number(req.params.candidateid);
-
-      if (req.user.email !== ADMIN) {
-        return next(
-          new customError("You are not authorized to access this route", 401)
-        );
-      }
-      const candidate = await prisma.candidate.findUnique({
-        where: {
-          candidate_id: candidateid,
-        },
-      });
-
-      if (!candidate) next(new customError("Candidate not found", 404));
-      await prisma.candidate.delete({
-        where: {
-          candidate_id: candidateid,
-        },
-      });
-
-      res.status(200).json({
-        status: "success",
-        message: "Candidate found",
-        candidate,
-      });
-    }
-  ),
-};
-
-//should change this ligic for controller whole code is repeating
+});
