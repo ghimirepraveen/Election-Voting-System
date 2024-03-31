@@ -1,92 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
-import { prisma } from "../models/db";
 import customError from "../errors/customError";
-import { checkAdminMail } from "../utils/checkaAdminMail";
-import {
-  getDetails,
-  getDetailsForVerified,
-  getAllEntityNotVerified,
-  getAllEntity,
-  deleteEntity,
-  verifyEntity,
-} from "../models/admin";
+import { prisma } from "../models/db";
 
-export const adminController = (userType: "voter" | "candidate") => ({
-  getdetails: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const id = Number(req.params.voterid);
-      if (!id) {
-        return next(new customError("Provide ID", 404));
-      }
-
-      const details = await getDetails(userType, id);
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-  getDetailsForVerified: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const details = await getDetailsForVerified(userType);
-      const email = req.user.email;
-
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-  getAllEntityNotVerified: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const details = await getAllEntityNotVerified(userType);
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-
-  getAllEntity: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const details = await getAllEntity(userType);
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-  verifyEntity: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const id = Number(req.params.voterid);
-      if (!id) {
-        return next(new customError("Provide ID", 404));
-      }
-
-      const details = await verifyEntity(userType, id);
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-
-  deleteEntity: asyncCatch(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const id = Number(req.params.voterid);
-      if (!id) {
-        return next(new customError("Provide ID", 404));
-      }
-
-      const details = await deleteEntity(userType, id);
-      res.status(200).json({
-        status: "success",
-        details,
-      });
-    }
-  ),
-  //after this all code is for election controller
+export const Election = {
   addElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const { name, start_date, end_date, description } = req.body;
@@ -127,6 +44,24 @@ export const adminController = (userType: "voter" | "candidate") => ({
       });
     }
   ),
+  getElectionById: asyncCatch(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const id = Number(req.params.electionid);
+      if (!id) {
+        return next(new customError("Provide ID", 404));
+      }
+      const election = await prisma.election.findUnique({
+        where: {
+          election_id: id,
+        },
+      });
+      res.status(200).json({
+        status: "success",
+        election,
+      });
+    }
+  ),
+
   getElectionBeforeEndDate: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const election = await prisma.election.findMany({
@@ -184,4 +119,4 @@ export const adminController = (userType: "voter" | "candidate") => ({
       });
     }
   ),
-});
+};

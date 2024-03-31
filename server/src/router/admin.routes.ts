@@ -1,5 +1,6 @@
 import express from "express";
 import { adminController } from "../controller/admin.controler";
+import { Election } from "../controller/election.controller";
 import { verifyRole } from "../middleware/auth";
 import { checkAdmin } from "../middleware/checkAdmin";
 const adminRouter = express.Router();
@@ -58,4 +59,11 @@ adminRouter.delete(
   adminController("candidate").deleteEntity
 );
 
+//election routes
+adminRouter.post("/addelection", Election.addElection);
+adminRouter.get("/getelection", Election.getAllElection);
+adminRouter.get("/getelectionwitenddate", Election.getElectionBeforeEndDate);
+adminRouter.put("/updateelection/:electionid", Election.updateElection);
+adminRouter.delete("/deleteelection/:electionid", Election.deleteElection);
+adminRouter.get("/getelection/:electionid", Election.getElectionById);
 export default adminRouter;

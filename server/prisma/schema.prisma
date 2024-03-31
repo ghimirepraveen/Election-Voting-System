@@ -90,6 +90,9 @@ model Election {
   admin            Admin            @relation(fields: [admin_id], references: [admin_id])
   admin_id         Int
   name             String
+  description      String
+  start_date       DateTime
+  end_date         DateTime
   candidates       Candidate[]
   voters           Voter[]
   electionCandidacy ElectionCandidacy[]
