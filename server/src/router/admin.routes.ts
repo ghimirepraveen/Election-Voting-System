@@ -1,17 +1,21 @@
 import express from "express";
 import { adminController } from "../controller/admin.controler";
 import { verifyRole } from "../middleware/auth";
-import { checkAdminMail } from "../utils/checkaAdminMail";
-
+import { checkAdmin } from "../middleware/checkAdmin";
 const adminRouter = express.Router();
 
 adminRouter.use(verifyRole(["VOTER", "CANDIDATE"]));
-adminRouter.use(checkAdminMail);
+adminRouter.use(checkAdmin);
 //admin is verified by email provided in .env file
 //adimin is checkted in checkAdminMail function in admin.controller.ts
 
 //VOTER ROUTES
-adminRouter.get("/getvoter/:voterid", adminController("voter").getdetails);
+adminRouter.get(
+  "/getvoter/:voterid",
+
+  adminController("voter").getdetails
+);
+
 adminRouter.get(
   "/getallvotersverfied",
   adminController("voter").getDetailsForVerified

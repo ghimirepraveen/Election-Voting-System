@@ -43,14 +43,12 @@ export const User = {
     const user = await getUser(email, role);
     if (!user) throw new customError("User not found", 404);
 
-    console.log(user);
     // const isMatch = await bcrypt.compare(
     //   password,
     //   user?.password_hash as string
     // );
-    const isMatch = password === user?.password_hash;
 
-    console.log(isMatch);
+    const isMatch = password === user?.password_hash;
 
     if (!isMatch) throw new customError("Invalid credentials", 401);
 
@@ -76,6 +74,15 @@ export const User = {
       res.status(200).json({
         status: "success",
         user,
+      });
+    }
+  ),
+  logout: asyncCatch(
+    async (req: Request, res: Response, next: NextFunction) => {
+      req.user = null;
+      res.status(200).json({
+        status: "success",
+        message: "Logged out successfully",
       });
     }
   ),

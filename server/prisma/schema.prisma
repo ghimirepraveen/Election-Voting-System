@@ -31,7 +31,6 @@ model User {
 enum Role {
   VOTER
   CANDIDATE
-  ADMIN
 }
 
 // Define the Voter model
@@ -41,10 +40,12 @@ model Voter {
   user_id           Int     @unique
   name              String
   address           String
-  citizen_number    String
+  citizen_number    String @unique
   is_verified       Boolean @default(false)
   votes             Vote[]
   photo             Photo[]
+  election        Election[]
+  electionVotes    ElectionVote[]
 }
 
 // Define the Candidate model
@@ -55,13 +56,16 @@ model Candidate {
   name              String
   address           String
   position          String
-  citizen_number    String
+  citizen_number    String @unique
   manifesto         String 
   is_verified       Boolean @default(false)
   citizenship_photo String?
   vote_count        Int     @default(0) // Field to store the count of votes
   votes             Vote[]
   photo             Photo[]
+  electionCandidacy ElectionCandidacy[]
+  electionVotes     ElectionVote[]
+  election         Election[]
 }
 
 // Define the Vote model
@@ -78,7 +82,37 @@ model Admin {
   admin_id Int  @id @default(autoincrement())
   user     User @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
   user_id  Int  @unique
+  election Election[]
 }
+
+model Election {
+  election_id      Int              @id @default(autoincrement())
+  admin            Admin            @relation(fields: [admin_id], references: [admin_id])
+  admin_id         Int
+  name             String
+  candidates       Candidate[]
+  voters           Voter[]
+  electionCandidacy ElectionCandidacy[]
+  electionVotes    ElectionVote[]
+}
+model ElectionVote {
+  electionVote_id  Int       @id @default(autoincrement())
+  election         Election  @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
+  election_id      Int
+  voter            Voter     @relation(fields: [voter_id], references: [voter_id], onDelete: Cascade)
+  voter_id         Int
+  candidate        Candidate @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
+  candidate_id     Int
+}
+
+model ElectionCandidacy {
+  electionCandidacy_id Int         @id @default(autoincrement())
+  election             Election    @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
+  election_id          Int
+  candidate            Candidate   @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
+  candidate_id         Int
+}
+
 
 model Photo {
   user User? @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
@@ -90,6 +124,4 @@ model Photo {
   candidate    Candidate? @relation(fields: [candidate_id], references: [candidate_id],onDelete: Cascade)
   candidate_id Int?
   isactive    Boolean?   @default(true)
-
 }
-
