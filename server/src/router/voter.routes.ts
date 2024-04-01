@@ -1,8 +1,9 @@
 import express from "express";
-import { User } from "../controller/user.controller";
 import { verifyRole } from "../middleware/auth";
 import { Voter } from "../controller/voter.controller";
 import upload from "../config/multer/multer";
+import { isVerifiedVoter } from "../middleware/isverifed";
+import { Vote } from "../controller/vote.controller";
 
 const voterRouter = express.Router();
 
@@ -21,5 +22,8 @@ voterRouter.put(
   upload.single("citizenship"),
   Voter.updateDetails
 );
+
+voterRouter.use(isVerifiedVoter);
+voterRouter.post("/vote/:electionid", Vote.addvote);
 
 export default voterRouter;

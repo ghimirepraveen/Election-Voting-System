@@ -71,7 +71,7 @@ export const Candidate = {
 
   updateDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user_id = req.user.user_id as number;
+      const user_id = req.user.id as number;
       const name = req.body.name as string;
       const address = req.body.address as string;
       const citizen_number = req.body.citizen_number as string;
@@ -90,6 +90,21 @@ export const Candidate = {
       ) {
         throw new Error("Required fields not provided");
       }
+
+      const findCandidate = await prisma.candidate.findUnique({
+        where: {
+          user_id,
+        },
+      });
+      if (!findCandidate)
+        return next(new customError("Candidate not found ", 404));
+      if (findCandidate.is_verified)
+        return next(
+          new customError(
+            "Your account is verified So not allowed to update ",
+            403
+          )
+        );
 
       await prisma.$transaction([
         prisma.photo.updateMany({

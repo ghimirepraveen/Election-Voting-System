@@ -77,6 +77,9 @@ model Vote {
   voter_id     Int       @unique
   candidate    Candidate @relation(fields: [candidate_id], references: [candidate_id],onDelete: Cascade)
   candidate_id Int
+  election         Election  @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
+  election_id      Int @unique
+  vote_count   Int       @default(0) 
 }
 
 // Define the Admin model
@@ -95,10 +98,12 @@ model Election {
   description      String
   start_date       DateTime
   end_date         DateTime
+  cadidatancyends  DateTime
   candidates       Candidate[]
   voters           Voter[]
   electionCandidacy ElectionCandidacy[]
   electionVotes    ElectionVote[]
+  vote             Vote[]
 }
 model ElectionVote {
   user              User    @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
@@ -120,6 +125,7 @@ model ElectionCandidacy {
   user_id           Int     @unique
   candidate            Candidate   @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
   candidate_id         Int
+
 }
 
 

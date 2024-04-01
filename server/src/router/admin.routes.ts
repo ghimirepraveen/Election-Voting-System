@@ -66,4 +66,10 @@ adminRouter.get("/getelectionwitenddate", Election.getElectionBeforeEndDate);
 adminRouter.put("/updateelection/:electionid", Election.updateElection);
 adminRouter.delete("/deleteelection/:electionid", Election.deleteElection);
 adminRouter.get("/getelection/:electionid", Election.getElectionById);
+adminRouter.get("/getwinner/:electionid", Election.getWinner);
+adminRouter.get(
+  "/getelectionresult/:electionid",
+  Election.getAllVoteCountOfElection
+);
+
 export default adminRouter;

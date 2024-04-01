@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
 import { prisma } from "../models/db";
 import customError from "../errors/customError";
-import { checkAdminMail } from "../utils/checkaAdminMail";
 import {
   getDetails,
   getDetailsForVerified,
@@ -11,7 +10,6 @@ import {
   deleteEntity,
   verifyEntity,
 } from "../utils/admin";
-
 export const adminController = (userType: "voter" | "candidate") => ({
   getdetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -89,9 +87,16 @@ export const adminController = (userType: "voter" | "candidate") => ({
   //after this all code is for election controller
   addElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { name, start_date, end_date, description } = req.body;
+      const { name, start_date, end_date, description, candidancyends } =
+        req.body;
 
-      if (!name || !start_date || !end_date || !description) {
+      if (
+        !name ||
+        !start_date ||
+        !end_date ||
+        !description ||
+        !candidancyends
+      ) {
         return next(new customError("Provide all data", 404));
       }
 
@@ -106,6 +111,7 @@ export const adminController = (userType: "voter" | "candidate") => ({
           start_date,
           end_date,
           description,
+          cadidatancyends: candidancyends,
         },
       });
       res.status(200).json({
