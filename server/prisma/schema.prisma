@@ -25,6 +25,8 @@ model User {
   candidate Candidate[]
   photo    Photo[]
   admin Admin[]
+   electionCandidacy ElectionCandidacy[]
+   electionVotes    ElectionVote[]
 }
 
 // Define the Role enum
@@ -99,9 +101,11 @@ model Election {
   electionVotes    ElectionVote[]
 }
 model ElectionVote {
+  user              User    @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
+  user_id           Int     @unique
   electionVote_id  Int       @id @default(autoincrement())
   election         Election  @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
-  election_id      Int
+  election_id      Int @unique
   voter            Voter     @relation(fields: [voter_id], references: [voter_id], onDelete: Cascade)
   voter_id         Int
   candidate        Candidate @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
@@ -111,7 +115,9 @@ model ElectionVote {
 model ElectionCandidacy {
   electionCandidacy_id Int         @id @default(autoincrement())
   election             Election    @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
-  election_id          Int
+  election_id          Int 
+  user              User    @relation(fields: [user_id], references: [user_id],onDelete: Cascade)
+  user_id           Int     @unique
   candidate            Candidate   @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
   candidate_id         Int
 }

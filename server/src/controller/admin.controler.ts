@@ -10,7 +10,7 @@ import {
   getAllEntity,
   deleteEntity,
   verifyEntity,
-} from "../models/admin";
+} from "../utils/admin";
 
 export const adminController = (userType: "voter" | "candidate") => ({
   getdetails: asyncCatch(

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import asyncCatch from "../errors/catchAsync";
-import { getAndCreateUser } from "../models/user";
+import { getAndCreateUser } from "../utils/user";
 import jwt from "jsonwebtoken";
 import { getUser } from "../utils/getuser";
 import customError from "../errors/customError";
