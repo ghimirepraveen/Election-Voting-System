@@ -2,7 +2,7 @@ import express from "express";
 import { verifyRole } from "../middleware/auth";
 import { Candidate } from "../controller/candidate.controller";
 import upload from "../config/multer/multer";
-import { Candidancy } from "../controller/candidancy";
+import { Candidancy } from "../controller/candidancy.controller";
 import { isVerifiedCandidate } from "../middleware/isverifed";
 import { Vote } from "../controller/vote.controller";
 import { Election } from "../controller/election.controller";

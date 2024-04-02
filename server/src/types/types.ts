@@ -6,6 +6,6 @@ declare global {
     export interface Vote extends Prisma.VoteFieldRefs {}
     export interface Candidate extends Prisma.CandidateFieldRefs {}
     export interface Voter extends Prisma.VoterFieldRefs {}
-    export interface Admin extends Prisma.AdminFieldRefs {}
+    export interface Election extends Prisma.ElectionFieldRefs {}
   }
 }

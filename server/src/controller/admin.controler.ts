@@ -100,7 +100,7 @@ export const adminController = (userType: "voter" | "candidate") => ({
       }
       const election = await prisma.election.create({
         data: {
-          admin_id: id,
+          user_id: id,
           name,
           start_date,
           end_date,
@@ -118,7 +118,7 @@ export const adminController = (userType: "voter" | "candidate") => ({
     async (req: Request, res: Response, next: NextFunction) => {
       const election = await prisma.election.findMany({
         where: {
-          admin_id: req.user.id,
+          user_id: req.user.id,
         },
       });
       res.status(200).json({
@@ -131,7 +131,7 @@ export const adminController = (userType: "voter" | "candidate") => ({
     async (req: Request, res: Response, next: NextFunction) => {
       const election = await prisma.election.findMany({
         where: {
-          admin_id: req.user.id,
+          user_id: req.user.id,
           end_date: {
             lte: new Date(),
           },

@@ -21,6 +21,15 @@ export const Candidate = {
       }
       const user_id = req.user.id as unknown as number;
 
+      //check either their is already candidate with same user_id
+      const checkCandidate = await prisma.candidate.findUnique({
+        where: {
+          user_id,
+        },
+      });
+      if (checkCandidate)
+        return next(new customError("Candidate already exists", 403));
+
       const adddeatails = await prisma.candidate.create({
         data: {
           user_id,
@@ -38,7 +47,7 @@ export const Candidate = {
         },
       });
 
-      res.status(200).json(adddeatails);
+      res.status(201).json(adddeatails);
     }
   ),
   getDetails: asyncCatch(
@@ -102,7 +111,7 @@ export const Candidate = {
         return next(
           new customError(
             "Your account is verified So not allowed to update ",
-            403
+            401
           )
         );
 

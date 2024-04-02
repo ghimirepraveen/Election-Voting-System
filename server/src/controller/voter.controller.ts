@@ -87,6 +87,24 @@ export const Voter = {
         return next(new customError("PRODIVE ALL DATA", 404));
       }
 
+      //if profile is already verified then return error
+      const voter = await prisma.voter.findUnique({
+        where: {
+          user_id: user.user_id,
+        },
+      });
+      if (!voter) {
+        return next(new customError("Voter not found ", 404));
+      }
+      if (voter.is_verified) {
+        return next(
+          new customError(
+            "Voter already verified,So not allowed to updated ",
+            401
+          )
+        );
+      }
+
       await prisma.$transaction([
         prisma.photo.updateMany({
           where: {

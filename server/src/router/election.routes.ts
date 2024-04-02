@@ -5,7 +5,7 @@ const electionRouter = express.Router();
 
 electionRouter.get("/getallelections", Election.getAllElection);
 electionRouter.get(
-  "/getelection/:electionid",
+  "/getelectionallvote/:electionid",
   Election.getAllVoteCountOfElection
 );
 electionRouter.get("/getwinner/:electionid", Election.getWinner);

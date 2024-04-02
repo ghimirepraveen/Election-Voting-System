@@ -19,7 +19,7 @@ export const Election = {
       }
       const election = await prisma.election.create({
         data: {
-          admin: { connect: { admin_id } },
+          user_id: admin_id,
           name,
           start_date,
           end_date,
@@ -27,7 +27,7 @@ export const Election = {
           candidacyends,
         },
       });
-      res.status(200).json({
+      res.status(201).json({
         status: "success",
         election,
       });
@@ -35,7 +35,24 @@ export const Election = {
   ),
   getAllElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const election = await prisma.election.findMany();
+      const election = await prisma.election.findMany({
+        select: {
+          election_id: true,
+          name: true,
+          start_date: true,
+          end_date: true,
+          description: true,
+          candidates: {
+            select: {
+              candidate_id: true,
+              name: true,
+              position: true,
+              manifesto: true,
+              vote_count: true,
+            },
+          },
+        },
+      });
       res.status(200).json({
         status: "success",
         election,
@@ -64,7 +81,7 @@ export const Election = {
     async (req: Request, res: Response, next: NextFunction) => {
       const election = await prisma.election.findMany({
         where: {
-          admin_id: req.user.id,
+          user_id: req.user.id,
           end_date: {
             lte: new Date(),
           },
@@ -177,9 +194,17 @@ export const Election = {
           candidates: true,
         },
       });
-      const winner = election?.candidates.reduce((prev, current) =>
-        prev.vote_count > current.vote_count ? prev : current
-      );
+      const winner =
+        election?.candidates && election.candidates.length > 0
+          ? election.candidates.reduce((prev, current) =>
+              prev.vote_count > current.vote_count ? prev : current
+            )
+          : null;
+
+      if (!winner) {
+        return next(new customError("No winner found", 404));
+      }
+
       res.status(200).json({
         status: "success",
         winner,

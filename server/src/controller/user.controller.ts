@@ -20,6 +20,13 @@ export const User = {
     async (req: Request, res: Response, next: NextFunction) => {
       const email = req.body.email;
       const role = req.body.role;
+      if (!email || !role)
+        return next(new customError("Internal Server Error", 400));
+
+      //checkeither role is among provided
+      if (role !== "VOTER" && role !== "CANDIDATE")
+        return next(new customError("Invalid role", 400));
+
       validateEmail(email);
       getAndCreateUser(email, role);
 
@@ -34,11 +41,15 @@ export const User = {
     const email = req.body.email as string;
     const password = req.body.password as string;
     const role = req.body.role;
+    console.log(email, password, role);
+
     if (!email || !password || !role)
       return next(new customError("Internal Server Error", 404));
+
     validateEmail(email);
 
-    checkPasswordExpire(email);
+    const checkTime = checkPasswordExpire(email);
+    if (!checkTime) throw new customError("Password expired", 401);
 
     const user = await getUser(email, role);
     if (!user) throw new customError("User not found", 404);
@@ -61,11 +72,18 @@ export const User = {
     );
     req.user = { id: user?.user_id, role: user?.role, email: user?.email };
 
-    res.status(200).json({
-      status: "success",
-      token,
-      data: req.user,
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(process.env.JWT_EXPIRE) * 1000,
+      })
+      .status(200)
+      .json({
+        status: "success",
+        token,
+        data: req.user,
+      });
   }),
 
   details: asyncCatch(

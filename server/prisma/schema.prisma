@@ -23,7 +23,7 @@ model User {
   voter             Voter[]
   candidate         Candidate[]
   photo             Photo[]
-  admin             Admin[]
+ election          Election[]
   electionCandidacy ElectionCandidacy[]
   electionVotes     ElectionVote[]
 }
@@ -82,17 +82,13 @@ model Vote {
 }
 
 // Define the Admin model
-model Admin {
-  admin_id Int        @id @default(autoincrement())
-  user     User       @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  user_id  Int        @unique
-  election Election[]
-}
+
 
 model Election {
   election_id       Int                 @id @default(autoincrement())
-  admin             Admin               @relation(fields: [admin_id], references: [admin_id])
-  admin_id          Int
+  user              User                @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id           Int                
+
   name              String
   description       String
   start_date        DateTime
