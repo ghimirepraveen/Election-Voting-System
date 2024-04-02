@@ -62,7 +62,7 @@ adminRouter.delete(
 //election routes
 adminRouter.post("/addelection", Election.addElection);
 adminRouter.get("/getelection", Election.getAllElection);
-adminRouter.get("/getelectionwitenddate", Election.getElectionBeforeEndDate);
+adminRouter.get("/getelectionwithenddate", Election.getElectionBeforeEndDate);
 adminRouter.put("/updateelection/:electionid", Election.updateElection);
 adminRouter.delete("/deleteelection/:electionid", Election.deleteElection);
 adminRouter.get("/getelection/:electionid", Election.getElectionById);

@@ -6,31 +6,25 @@ import { prisma } from "../models/db";
 export const Election = {
   addElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { name, start_date, end_date, description, cadidatancyends } =
+      const { name, start_date, end_date, description, candidacyends } =
         req.body;
 
-      if (
-        !name ||
-        !start_date ||
-        !end_date ||
-        !description ||
-        !cadidatancyends
-      ) {
+      if (!name || !start_date || !end_date || !description || !candidacyends) {
         return next(new customError("Provide all data", 404));
       }
 
-      const id = req.user.id;
-      if (!id) {
+      const admin_id = req.user.id;
+      if (!admin_id) {
         return next(new customError("Provide ID", 404));
       }
       const election = await prisma.election.create({
         data: {
-          admin_id: id,
+          admin: { connect: { admin_id } },
           name,
           start_date,
           end_date,
           description,
-          cadidatancyends,
+          candidacyends,
         },
       });
       res.status(200).json({
@@ -41,11 +35,7 @@ export const Election = {
   ),
   getAllElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const election = await prisma.election.findMany({
-        where: {
-          admin_id: req.user.id,
-        },
-      });
+      const election = await prisma.election.findMany();
       res.status(200).json({
         status: "success",
         election,
@@ -154,6 +144,15 @@ export const Election = {
       if (!id) {
         return next(new customError("Provide ID", 404));
       }
+      //check either there is election or not with this id
+      const electionExist = await prisma.election.findUnique({
+        where: {
+          election_id: id,
+        },
+      });
+      if (!electionExist) {
+        return next(new customError("No election found with this id", 404));
+      }
 
       //check election time is over or not
       const electionTime = await prisma.election.findUnique({
@@ -164,8 +163,8 @@ export const Election = {
           end_date: true,
         },
       });
+      console.log("electionTime", electionTime);
       const current_time = new Date();
-
       if (!electionTime || current_time < electionTime.end_date) {
         return next(new customError("Election time is not over", 404));
       }

@@ -87,16 +87,10 @@ export const adminController = (userType: "voter" | "candidate") => ({
   //after this all code is for election controller
   addElection: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
-      const { name, start_date, end_date, description, candidancyends } =
+      const { name, start_date, end_date, description, candidacyends } =
         req.body;
 
-      if (
-        !name ||
-        !start_date ||
-        !end_date ||
-        !description ||
-        !candidancyends
-      ) {
+      if (!name || !start_date || !end_date || !description || !candidacyends) {
         return next(new customError("Provide all data", 404));
       }
 
@@ -111,7 +105,7 @@ export const adminController = (userType: "voter" | "candidate") => ({
           start_date,
           end_date,
           description,
-          cadidatancyends: candidancyends,
+          candidacyends,
         },
       });
       res.status(200).json({

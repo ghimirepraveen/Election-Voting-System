@@ -30,7 +30,7 @@ export const Candidancy = {
       });
       if (!election)
         return next(new customError("Election does not exists", 404));
-      const end_time = election.cadidatancyends as Date;
+      const end_time = election.candidacyends as Date;
       const current_time = new Date();
       if (current_time > end_time)
         return next(new customError("Candidancy time is over", 404));
