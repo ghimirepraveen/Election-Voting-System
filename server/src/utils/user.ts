@@ -17,7 +17,7 @@ async function generatePassword(): Promise<string> {
 
 function passwordTime(): Date {
   const expirationTime = new Date();
-  expirationTime.setMinutes(expirationTime.getMinutes() + 100); // OTP will expire in 1 minute
+  expirationTime.setMinutes(expirationTime.getMinutes() + 10); // OTP will expire in 1 minute
   return expirationTime;
 }
 
@@ -39,8 +39,10 @@ export async function getAndCreateUser(email: string, role: string) {
     const user = await getUser(email, role as Role);
 
     if (user && !checkExpire) {
+      console.log("User exists and password expired");
       const hashedPassword = await hashPassword(password);
       const passwors_expires = passwordTime();
+      console.log(passwors_expires);
 
       await prisma.user.update({
         where: { email: email },
@@ -54,7 +56,7 @@ export async function getAndCreateUser(email: string, role: string) {
     } else {
       if (!user) {
         const hashedPassword = await hashPassword(password);
-        const passwors_expires = passwordTime();
+        const passwors_expires = await passwordTime();
         await prisma.user.create({
           data: {
             email: email,

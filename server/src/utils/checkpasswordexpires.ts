@@ -1,6 +1,6 @@
 import { prisma } from "../models/db";
 
-export default async function checkPasswordExpire(email: string) {
+export default async function notExpired(email: string) {
   try {
     const [user] = await prisma.user
       .findMany({

@@ -41,7 +41,6 @@ export const User = {
     const email = req.body.email as string;
     const password = req.body.password as string;
     const role = req.body.role;
-    console.log(email, password, role);
 
     if (!email || !password || !role)
       return next(new customError("Internal Server Error", 404));
@@ -49,6 +48,7 @@ export const User = {
     validateEmail(email);
 
     const checkTime = checkPasswordExpire(email);
+    console.log(checkTime);
     if (!checkTime) throw new customError("Password expired", 401);
 
     const user = await getUser(email, role);
@@ -60,8 +60,8 @@ export const User = {
     // );
 
     const isMatch = password === user?.password_hash;
-
     if (!isMatch) throw new customError("Invalid credentials", 401);
+    console.log(isMatch);
 
     const token = jwt.sign(
       { id: user?.user_id, role: user?.role, email: user?.email },
@@ -76,7 +76,7 @@ export const User = {
       .cookie("token", token, {
         httpOnly: true,
         secure: true,
-        maxAge: Number(process.env.JWT_EXPIRE) * 1000,
+        maxAge: 50 * 1000,
       })
       .status(200)
       .json({
