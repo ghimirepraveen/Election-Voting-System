@@ -180,7 +180,7 @@ export const Election = {
           end_date: true,
         },
       });
-      console.log("electionTime", electionTime);
+
       const current_time = new Date();
       if (!electionTime || current_time < electionTime.end_date) {
         return next(new customError("Election time is not over", 404));

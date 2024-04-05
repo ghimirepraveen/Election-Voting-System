@@ -46,14 +46,21 @@ export const User = {
       return next(new customError("Internal Server Error", 404));
 
     validateEmail(email);
+    const getuser = await getUser(email, role);
+    if (!getuser) {
+      return next(new customError("User not found", 404));
+    }
+
+    if (getuser?.passwors_expires && getuser?.passwors_expires < new Date()) {
+      return next(new customError("Password expired", 401));
+    }
 
     const checkTime = checkPasswordExpire(email);
-    console.log(checkTime);
+
     if (!checkTime) throw new customError("Password expired", 401);
 
     const user = await getUser(email, role);
     if (!user) throw new customError("User not found", 404);
-
     // const isMatch = await bcrypt.compare(
     //   password,
     //   user?.password_hash as string
@@ -61,7 +68,6 @@ export const User = {
 
     const isMatch = password === user?.password_hash;
     if (!isMatch) throw new customError("Invalid credentials", 401);
-    console.log(isMatch);
 
     const token = jwt.sign(
       { id: user?.user_id, role: user?.role, email: user?.email },

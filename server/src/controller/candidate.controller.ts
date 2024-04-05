@@ -105,6 +105,7 @@ export const Candidate = {
           user_id,
         },
       });
+
       if (!findCandidate)
         return next(new customError("Candidate not found ", 404));
       if (findCandidate.is_verified)

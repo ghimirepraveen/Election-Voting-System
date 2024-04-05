@@ -16,7 +16,7 @@ datasource db {
 // Define the User model
 model User {
   user_id           Int                 @id @default(autoincrement())
-  email             String              @unique
+  email             String            
   password_hash     String?
   passwors_expires  DateTime?
   role              Role?
