@@ -8,7 +8,9 @@ export const checkAdmin = async (
   next: NextFunction
 ) => {
   const email = req.user.email;
+
   const isAdmin: boolean = await checkAdminMail(email);
+
   if (!isAdmin) {
     return next(new customError("You are not authorized", 403));
   }

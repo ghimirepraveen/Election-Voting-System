@@ -3,8 +3,6 @@ import asyncCatch from "../errors/catchAsync";
 import customError from "../errors/customError";
 import { prisma } from "../models/db";
 
-//make controller for vote that only voter can vote for a candidate once and only if the election is active
-
 export const Vote = {
   addvote: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -56,6 +54,7 @@ export const Vote = {
           election_id,
         },
       });
+      //vote is incremented
 
       const incrementVoteCount = prisma.candidate.update({
         where: { candidate_id },

@@ -81,7 +81,7 @@ model Vote {
   vote_count   Int       @default(0)
 }
 
-// Define the Admin model
+// Define the Election model
 
 
 model Election {
@@ -100,7 +100,7 @@ model Election {
   electionVotes     ElectionVote[]
   vote              Vote[]
 }
-
+// Define the ElectionVote model
 model ElectionVote {
   user            User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   user_id         Int       @unique
@@ -112,7 +112,7 @@ model ElectionVote {
   candidate       Candidate @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
   candidate_id    Int
 }
-
+// Define the ElectionCandidacy model
 model ElectionCandidacy {
   electionCandidacy_id Int       @id @default(autoincrement())
   election             Election  @relation(fields: [election_id], references: [election_id], onDelete: Cascade)
@@ -122,7 +122,7 @@ model ElectionCandidacy {
   candidate            Candidate @relation(fields: [candidate_id], references: [candidate_id], onDelete: Cascade)
   candidate_id         Int
 }
-
+// Define the Photo model
 model Photo {
   user         User?      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   user_id      Int?

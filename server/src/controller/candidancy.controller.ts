@@ -47,6 +47,8 @@ export const Candidancy = {
     }
   ),
 
+  //can candidate will remove its candidancy
+
   deleteCandidancy: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const user_id = req.user.id as number;
@@ -55,7 +57,7 @@ export const Candidancy = {
 
       if (!election_id)
         return next(new customError("Provide election ID", 404));
-      //candidancy should deleted before election starts
+
       const election = await prisma.election.findFirst({
         where: {
           election_id,
@@ -77,6 +79,7 @@ export const Candidancy = {
       res.status(200).json(deleteCandidancy);
     }
   ),
+
   getelectionCandidancy: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {
       const election_id = req.params.election_id as unknown as number;
