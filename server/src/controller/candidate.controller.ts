@@ -77,6 +77,7 @@ export const Candidate = {
       res.status(200).json(getDetails);
     }
   ),
+  //perform update operation
 
   updateDetails: asyncCatch(
     async (req: Request, res: Response, next: NextFunction) => {

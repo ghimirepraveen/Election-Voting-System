@@ -17,6 +17,8 @@ export const Election = {
       if (!admin_id) {
         return next(new customError("Provide ID", 404));
       }
+
+      //get election
       const election = await prisma.election.create({
         data: {
           user_id: admin_id,

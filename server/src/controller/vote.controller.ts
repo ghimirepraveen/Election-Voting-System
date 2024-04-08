@@ -21,6 +21,8 @@ export const Vote = {
           user_id,
         },
       });
+
+      //check if there in no voter of that id 
       if (!voter)
         return next(new customError("You are not authorized to vote", 404));
 
