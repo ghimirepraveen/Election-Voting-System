@@ -45,15 +45,14 @@ const createTransporter = async () => {
 };
 
 export const sendPasswordUsingMail = async (
-  Password: string,
-  email: string
+  email: string,
+  Password: string
 ) => {
   const emailConfig = {
     from: process.env.USER_EMAIL,
     to: email,
     subject: "OTP Verification",
-    html: `<h1>-</h1><h3><p>Your Password is: ${Password}</h3></p><p>Expiring in 1 Minutes....</p>`,
-    text: `Voting System:-\nYour Password  is:${Password}\n`,
+    html: `<h1></h1><h3><p>Your Password is: ${Password}</h3></p><p>Expiring in 1 Minutes....</p>`,
   };
 
   try {
