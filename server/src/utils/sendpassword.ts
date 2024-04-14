@@ -14,7 +14,6 @@ const createTransporter = async () => {
       CLIENT_SECRET,
       REDIRECT_URI
     );
-
     oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
     const accessToken = await new Promise((resolve, reject) => {

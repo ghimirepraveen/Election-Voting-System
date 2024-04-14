@@ -9,6 +9,7 @@ import { Election } from "../controller/election.controller";
 
 const candidateRouter = express.Router();
 
+//MUST OF THIS ROUTES ARE NOT TESTED
 candidateRouter.use(verifyRole(["CANDIDATE"]));
 
 candidateRouter.post(
@@ -39,6 +40,7 @@ candidateRouter.delete(
   "/deletecandidancy/:electionid",
   Candidancy.deleteCandidancy
 );
+
 candidateRouter.get(
   "/getelectioncandidancy/:electionid",
   Candidancy.getelectionCandidancy
