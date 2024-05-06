@@ -20,6 +20,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use("/api/user", userRouter);
+
 app.use("/api/voter", voterRouter);
 app.use("/api/candidate", candidateRouter);
 app.use("/api/admin", adminRouter);

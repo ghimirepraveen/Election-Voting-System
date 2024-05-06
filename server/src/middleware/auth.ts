@@ -8,7 +8,6 @@ const verifyRole = (roles: string[]) => {
       if (!token) {
         throw new Error("Not authorized");
       }
-
       const decoded: any = jwt.verify(
         token,
         process.env.JWT_SECRET as string
