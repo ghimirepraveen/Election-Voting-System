@@ -25,14 +25,14 @@ export const User = {
 
       //checkeither role is among provided
       if (role !== "VOTER" && role !== "CANDIDATE")
-        return next(new customError("Invalid role", 400));
+        return next(new customError("Invalid Role", 400));
 
       validateEmail(email);
       getAndCreateUser(email, role);
 
       res.status(200).json({
         status: "success",
-        message: "Password sent to email",
+        message: "Password Sent to Email",
       });
     }
   ),
@@ -60,14 +60,14 @@ export const User = {
     if (!checkTime) throw new customError("Password expired", 401);
 
     const user = await getUser(email, role);
-    if (!user) throw new customError("User not found", 404);
+    if (!user) throw new customError("User Not Found", 404);
     // const isMatch = await bcrypt.compare(
     //   password,
     //   user?.password_hash as string
     // );
 
     const isMatch = password === user?.password_hash;
-    if (!isMatch) throw new customError("Invalid credentials", 401);
+    if (!isMatch) throw new customError("Invalid Credentials", 401);
 
     const token = jwt.sign(
       { id: user?.user_id, role: user?.role, email: user?.email },
@@ -106,7 +106,7 @@ export const User = {
       req.user = null;
       res.status(200).json({
         status: "success",
-        message: "Logged out successfully",
+        message: "Logged Out Successfully",
       });
     }
   ),
